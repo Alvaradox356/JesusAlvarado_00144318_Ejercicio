@@ -1,0 +1,57 @@
+table dim_vehiculo
+	lineageTag: 253dbf60-478b-4288-a1f3-6699e98acea7
+
+	column id_vehiculo
+		dataType: int64
+		formatString: 0
+		lineageTag: d12b04ec-d743-4c0e-a9b8-d3831dbf1939
+		summarizeBy: none
+		sourceColumn: id_vehiculo
+
+		annotation SummarizationSetBy = Automatic
+
+	column marca_vehiculo
+		dataType: string
+		lineageTag: b4ebe1bd-e46e-4ac7-8fc7-fb1ac9df430d
+		summarizeBy: none
+		sourceColumn: marca_vehiculo
+
+		annotation SummarizationSetBy = Automatic
+
+	column modelo_vehiculo
+		dataType: string
+		lineageTag: dc78341b-23db-4f20-9ae9-b1e141933dbd
+		summarizeBy: none
+		sourceColumn: modelo_vehiculo
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo_vehiculo
+		dataType: string
+		lineageTag: f7e93bb8-3a40-47a0-b680-29b5fcca2356
+		summarizeBy: none
+		sourceColumn: tipo_vehiculo
+
+		annotation SummarizationSetBy = Automatic
+
+	column año_vehiculo
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e282c8d-372e-4bd0-9a03-08a13e2672bf
+		summarizeBy: sum
+		sourceColumn: año_vehiculo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_vehiculo = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\jesus\Downloads\VentasVehiculos.xlsx"), null, true),
+				    dim_vehiculo_Table = Origen{[Item="dim_vehiculo",Kind="Table"]}[Data],
+				    #"Tipo cambiado" = Table.TransformColumnTypes(dim_vehiculo_Table,{{"id_vehiculo", Int64.Type}, {"marca_vehiculo", type text}, {"modelo_vehiculo", type text}, {"tipo_vehiculo", type text}, {"año_vehiculo", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

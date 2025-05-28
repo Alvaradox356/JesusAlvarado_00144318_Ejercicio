@@ -1,0 +1,39 @@
+table VARIABLES
+	lineageTag: 283b9357-b5a6-4cc3-8cd3-c32ea9dc976c
+
+	measure 'Ventas Totales' = SUM(Fact_Ventas[Precio Venta sin IGV])
+		lineageTag: a49be6d7-efdc-4161-877e-f877659e5937
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Cantidad Ventas' = COUNTROWS(Fact_Ventas)
+		formatString: 0
+		lineageTag: c0aeb9f4-9a63-4031-91d3-3adbb768ceb1
+
+	measure 'Precio Máximo por Modelo' =
+			
+			CALCULATE(
+			    MAX(Fotos_Vehiculos[Precio]),
+			    ALLEXCEPT(Fotos_Vehiculos, Fotos_Vehiculos[Modelo])
+			)
+		formatString: 0
+		lineageTag: 6da5e79f-a7b5-4f70-a7e6-b2fcd8be6ce6
+
+	column Column
+		isHidden
+		formatString: 0
+		lineageTag: d257c678-eb95-4491-9233-e0e3f4a6851b
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Column]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition VARIABLES = calculated
+		mode: import
+		source = Row("Column", BLANK())
+
+	annotation PBI_Id = 0321b4c8ebd14a7cad23c998d3e7c783
+
+	annotation 436ba87b-9c83-4389-a31b-ebd06a36be98 = {"Expression":""}
+

@@ -1,0 +1,76 @@
+table Fotos_Vehiculos
+	lineageTag: eda0c3f1-4e08-4423-a91a-ee072d67ed24
+
+	column Id
+		dataType: int64
+		formatString: 0
+		lineageTag: b0600722-66d6-4294-85a0-bf0ca0035797
+		summarizeBy: none
+		sourceColumn: Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Modelo
+		dataType: string
+		lineageTag: 9061c9cf-6bb7-40e2-b033-7aa62ede7028
+		summarizeBy: none
+		sourceColumn: Modelo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Version
+		dataType: string
+		lineageTag: 32c54b3c-9b75-4440-aab6-6a9ac2322fd6
+		summarizeBy: none
+		sourceColumn: Version
+
+		annotation SummarizationSetBy = Automatic
+
+	column Precio
+		dataType: int64
+		formatString: 0
+		lineageTag: a8a3d10c-0a8f-474f-86b9-d359e6d77af4
+		summarizeBy: none
+		sourceColumn: Precio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Imagen
+		dataType: string
+		lineageTag: aec8fd50-93e2-41f0-ae4e-d0d673431955
+		summarizeBy: none
+		sourceColumn: Imagen
+
+		annotation SummarizationSetBy = Automatic
+
+	column EsPrecioMaximo =
+			
+			IF(
+			    Fotos_Vehiculos[Precio] = [Precio Máximo por Modelo],
+			    1,
+			    0
+			)
+		formatString: 0
+		lineageTag: 3744b450-c1f9-41a1-ad34-500c0a3fde55
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Modelo_Mayusculas = UPPER(Fotos_Vehiculos[Modelo])
+		lineageTag: 59f806bd-f938-4e85-8a04-e2147e648209
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fotos_Vehiculos = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\jesus\Downloads\VentasVehiculos.xlsx"), null, true),
+				    Fotos_Vehiculos_Table = Origen{[Item="Fotos_Vehiculos",Kind="Table"]}[Data],
+				    #"Tipo cambiado" = Table.TransformColumnTypes(Fotos_Vehiculos_Table,{{"Id", Int64.Type}, {"Modelo", type text}, {"Version", type text}, {"Precio", Int64.Type}, {"Imagen", type text}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+
